@@ -12,13 +12,16 @@ const controller = {
 	},
 	
 	// Create -  Method to store
-	store: (req, res) => {
+	store: (req, res) => {	
+		
 		let errors = validationResult(req);		
 		
-		if(!errors.isEmpty()){ //Si errors tiene datos 
+		if(errors){ //Si errrors tiene datos
 			res.render('register', { errors: errors.errors})
+			
 		} else { //Si errors está vacía
-
+			console.log(errors);
+			console.log('En store dentr de controller');
 			//Agregar controles por si el archivo no existe o si el json está vacío.
 			let usersFilePath = path.join(__dirname, '../data/usersDataBase.json');
 			let users = JSON.parse(fs.readFileSync(usersFilePath, 'utf-8'));

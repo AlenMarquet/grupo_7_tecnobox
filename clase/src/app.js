@@ -5,6 +5,8 @@ const express = require('express');
 const logger = require('morgan');
 const path = require('path');
 const methodOverride =  require('method-override'); // Pasar poder usar los métodos PUT y DELETE
+const session = require('express-session');
+const authMiddleware = require('./middlewares/authMiddleware'); //Traemos el middleWare que controla el logueo de usuarios.
 
 // ************ express() - (don't touch) ************
 const app = express();
@@ -16,6 +18,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(methodOverride('_method')); // Pasar poder pisar el method="POST" en el formulario por PUT y DELETE
+app.use(session({secret:'mercadoliebre'}));
+app.use(authMiddleware); //Aplicamos el middleware para control de logueo a nivel aplicación.
 
 // ************ Template Engine - (don't touch) ************
 app.set('view engine', 'ejs');
@@ -29,13 +33,14 @@ const mainRouter = require('./routes/main'); // Rutas main
 const productsRouter = require('./routes/products'); // Rutas /products
 const registerRouter = require('./routes/register');
 const loginRouter = require('./routes/login');
-// const profileRouter = require('./routes/profile');
+const userRouter = require('./routes/user');
 
 app.use('/', mainRouter);
 app.use('/products', productsRouter);
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
-// app.use('/profile', profileRouter);
+app.use('/profile', userRouter);
+app.use('/logout', userRouter);
 
 
 // ************ DON'T TOUCH FROM HERE ************

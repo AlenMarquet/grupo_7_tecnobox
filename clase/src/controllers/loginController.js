@@ -30,6 +30,8 @@ const controller = {
 			if (usuarioEncontrado == undefined){
 				res.send('El usuario no se encuentra registrado')
 			} else {
+				req.session.email = usuarioEncontrado.email; //Guardo los datos del usuario en Session.
+				req.session.id = usuarioEncontrado.id;
 				res.redirect('/profile/' + usuarioEncontrado.id);
 			}
 			
