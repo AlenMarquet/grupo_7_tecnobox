@@ -5,9 +5,9 @@ module.exports = {
     "database": "movies_db",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false,
-    "define":{
-      "underscored" : true,
+    "operatorsAliases": 0,
+    "define" : {
+      underscored : 1
     }
   },
   "test": {
@@ -20,7 +20,7 @@ module.exports = {
   },
   "production": {
     "username": "root",
-    "password": 'root',
+    "password": null,
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql",

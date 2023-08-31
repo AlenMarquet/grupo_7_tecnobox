@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>movies</title>
 </head>
 <body>
-    <h1>Detalle de películas</h1>
+    <h1>Listado de películas</h1>
     <ul>
-        <% moviesAll.forEach(function(movie){ %>
-            <li><%= movie.title%></li>
+        <% moviesAll.forEach(movie => { %>
+         <li> <%= movie.title %> </li>
         <% }) %> 
     </ul>
 </body>

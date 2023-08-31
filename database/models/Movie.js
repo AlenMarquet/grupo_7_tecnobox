@@ -1,17 +1,14 @@
 module.exports = (sequelize, dataTypes) => {
-    const alias = 'Movies';
+    
+    const alias = "Movie"; //Chequear sintaxis. Va en singular.
     const cols = {
-        title: {
-            type: dataTypes.STRING,
-        }
+        title : dataTypes.STRING,
     }
     const config = {
-        // tableName = 'movies'
-        timestamps : true,
+        timestamps : true, //Chequear si los campos estan en camel case
     }
-
+    
     const Movie = sequelize.define(alias, cols, config);
-
 
     return Movie;
 }

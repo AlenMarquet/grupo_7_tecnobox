@@ -1,15 +1,15 @@
 const express = require('express');
 const app = express();
-const moviesRouter = require('./routes/movies')
+const moviesRouter = require('./routes/movies');
 
-//Template engine EJS
+//Tempelate engine.
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 
 app.listen(3000, function(){
     console.log('Running on 3000');
-});
+})
 
-//Routes
+//Rutas
 app.use('/movies', moviesRouter);
