@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path'); //Podemos usarlo en el setting de archivos estáticos.
 const homeRoutes = require('./routes/home');
-const userRoutes = require('./routes/user');
+const registerRoutes = require('./routes/register');
+const loginRoutes = require('./routes/login');
 
 //Setting template engine
 app.set('view engine', 'ejs');
@@ -24,4 +25,5 @@ app.listen(3000, function(){
 
 //Rutas
 app.use('/', homeRoutes);
-app.use('/registro', userRoutes);
+app.use('/register', registerRoutes);
+app.use('/login', loginRoutes);
