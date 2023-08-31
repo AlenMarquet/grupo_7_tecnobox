@@ -1,15 +1,20 @@
 const express = require('express');
 const app = express();
-const path = require('path');
-const homeRouter = require('./routes/home');
+const path = require('path'); //Podemos usarlo en el setting de archivos estáticos.
+const homeRoutes = require('./routes/home');
 
-app.listen(3000, function(){console.log('Running port 3000');});
-
-app.set('views', path.join(__dirname, '/views'));
+//Setting template engine
 app.set('view engine', 'ejs');
-
-
+//Setear la carpeta public para los archivos estaticos Opción 1
 app.use(express.static(__dirname + '/public'));
 
+//Setear la carpeta public para los archivos estaticos Opción 2: usando path.join
+//app.use(express.static(path.join(__dirname, '/public')));
 
-app.use('/', homeRouter)
+
+
+app.listen(3000, function(){
+    console.log('Running on 3000');
+});
+
+app.use('/', homeRoutes);

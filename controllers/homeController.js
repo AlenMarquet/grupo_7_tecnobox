@@ -1,9 +1,13 @@
 const homeController = {
     index : function(req, res){
-        res.render('index')
+        let vac = {
+            title : 'home',
+            description : 'Home de mi sitio web',
+            saludo : 'Hola Ale.'
+        }
+
+        res.render('index', vac);
     }
 }
-
-
 
 module.exports = homeController;
